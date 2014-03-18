@@ -1,6 +1,7 @@
 package org.emud.content;
 
 import org.emud.content.observer.Observer;
+import org.emud.content.observer.Subject;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
@@ -8,9 +9,9 @@ import android.content.Context;
 public abstract class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 	private D mData;
 	private Query<D> mQuery;
-	private DataSubject mSubject;
+	private Subject mSubject;
 
-	public ObserverLoader(Context context, Query<D> query, DataSubject dataSubject) {
+	public ObserverLoader(Context context, Query<D> query, Subject dataSubject) {
 		super(context);
 		mQuery = query;
 		mSubject = dataSubject;

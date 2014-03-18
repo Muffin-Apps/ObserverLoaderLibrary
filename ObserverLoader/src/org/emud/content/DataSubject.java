@@ -13,9 +13,12 @@ import org.emud.content.observer.Subject;
  * @author alberto
  *
  */
-public abstract class DataSubject implements Subject{
+public class DataSubject implements Subject{
 
 	List<Observer> mObservers = new ArrayList<Observer>();
+	
+	public DataSubject(){
+	}
 	
 	@Override
 	public void registerObserver(Observer obs){
