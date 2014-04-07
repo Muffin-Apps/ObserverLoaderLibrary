@@ -1,20 +1,40 @@
 package org.emud.content;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.emud.content.observer.Observer;
 import org.emud.content.observer.Subject;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 
-public abstract class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
+public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 	private D mData;
 	private Query<D> mQuery;
-	private Subject mSubject;
+	private ArrayList<Subject> mSubjects;
 
+	public ObserverLoader(Context context, Query<D> query){
+		super(context);
+		mQuery = query;
+		mSubjects = new ArrayList<Subject>();
+	}
+	
 	public ObserverLoader(Context context, Query<D> query, Subject dataSubject) {
 		super(context);
 		mQuery = query;
-		mSubject = dataSubject;
+		mSubjects = new ArrayList<Subject>();
+		if(dataSubject != null)
+			mSubjects.add(dataSubject);
+	}
+	
+	public ObserverLoader(Context context, Query<D> query, List<Subject> dataSubjects){
+		super(context);
+		mQuery = query;
+		mSubjects = new ArrayList<Subject>();
+		
+		for(Subject sub : dataSubjects)
+			mSubjects.add(sub);
 	}
 
 	@Override
@@ -47,8 +67,8 @@ public abstract class ObserverLoader<D> extends AsyncTaskLoader<D> implements Ob
 			deliverResult(mData);
 		}
 
-		if(mSubject != null)
-			mSubject.registerObserver(this);
+		for(Subject sub : mSubjects)
+			sub.registerObserver(this);
 
 		if (takeContentChanged() || mData == null) {
 			forceLoad();
@@ -69,9 +89,8 @@ public abstract class ObserverLoader<D> extends AsyncTaskLoader<D> implements Ob
 			mData = null;
 		}
 
-		if (mSubject != null) {
-			mSubject.unregisterObserver(this);
-		}
+		for(Subject sub : mSubjects)
+			sub.unregisterObserver(this);
 	}
 
 	@Override
@@ -80,10 +99,29 @@ public abstract class ObserverLoader<D> extends AsyncTaskLoader<D> implements Ob
 		releaseResources(data);
 	}
 
+	@Override
 	public void update(){
 		onContentChanged();
 	}
+	
+	public void addSubject(Subject sub){
+		mSubjects.add(sub);
+	}
+	
+	public void removeSubject(Subject sub){
+		mSubjects.remove(sub);
+	}
+	
+	public Query<D> getQuery() {
+		return mQuery;
+	}
 
-	protected abstract void releaseResources(D data);
+	public void setQuery(Query<D> query) {
+		this.mQuery = query;
+	}
+
+	protected void releaseResources(D data){
+		
+	}
 
 }
