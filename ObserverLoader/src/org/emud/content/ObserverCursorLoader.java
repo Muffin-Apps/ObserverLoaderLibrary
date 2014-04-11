@@ -29,4 +29,9 @@ public class ObserverCursorLoader extends ObserverLoader<Cursor> {
 			data.close();
 	}
 
+	@Override
+	public Cursor loadInBackground(){
+		Cursor cursor = super.loadInBackground();
+		return cursor;
+	}
 }

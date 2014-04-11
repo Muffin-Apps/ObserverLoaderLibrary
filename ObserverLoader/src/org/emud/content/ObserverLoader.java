@@ -7,6 +7,7 @@ import org.emud.content.observer.Observer;
 import org.emud.content.observer.Subject;
 
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 import android.content.Context;
 
 public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
@@ -26,6 +27,8 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 		mSubjects = new ArrayList<Subject>();
 		if(dataSubject != null)
 			mSubjects.add(dataSubject);
+		
+		onContentChanged();
 	}
 	
 	public ObserverLoader(Context context, Query<D> query, List<Subject> dataSubjects){
@@ -35,6 +38,8 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 		
 		for(Subject sub : dataSubjects)
 			mSubjects.add(sub);
+		
+		onContentChanged();
 	}
 
 	@Override
