@@ -1,12 +1,13 @@
-package org.emud.content;
+package org.emud.support.v4.content;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.emud.content.Query;
 import org.emud.content.observer.Observer;
 import org.emud.content.observer.Subject;
 
-import android.content.AsyncTaskLoader;
+import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
 
 public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {

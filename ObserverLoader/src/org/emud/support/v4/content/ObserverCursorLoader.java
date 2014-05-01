@@ -1,7 +1,8 @@
-package org.emud.content;
+package org.emud.support.v4.content;
 
 import java.util.List;
 
+import org.emud.content.Query;
 import org.emud.content.observer.Subject;
 
 import android.content.Context;
