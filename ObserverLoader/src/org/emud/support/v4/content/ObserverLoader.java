@@ -14,32 +14,30 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 	private D mData;
 	private Query<D> mQuery;
 	private ArrayList<Subject> mSubjects;
+	private boolean registered;
 
 	public ObserverLoader(Context context, Query<D> query){
 		super(context);
+		registered = false;
 		mQuery = query;
 		mSubjects = new ArrayList<Subject>();
 	}
 	
 	public ObserverLoader(Context context, Query<D> query, Subject dataSubject) {
 		super(context);
+		registered = false;
 		mQuery = query;
 		mSubjects = new ArrayList<Subject>();
+		
 		if(dataSubject != null)
 			mSubjects.add(dataSubject);
-		
-		onContentChanged();
 	}
 	
 	public ObserverLoader(Context context, Query<D> query, List<Subject> dataSubjects){
 		super(context);
+		registered = false;
 		mQuery = query;
-		mSubjects = new ArrayList<Subject>();
-		
-		for(Subject sub : dataSubjects)
-			mSubjects.add(sub);
-		
-		onContentChanged();
+		mSubjects = new ArrayList<Subject>(dataSubjects);
 	}
 
 	@Override
@@ -72,8 +70,11 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 			deliverResult(mData);
 		}
 
-		for(Subject sub : mSubjects)
-			sub.registerObserver(this);
+		if(!registered){
+			registered = true;
+			for(Subject sub : mSubjects)
+				sub.registerObserver(this);
+		}
 
 		if (takeContentChanged() || mData == null) {
 			forceLoad();
@@ -94,8 +95,11 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 			mData = null;
 		}
 
-		for(Subject sub : mSubjects)
-			sub.unregisterObserver(this);
+		if(registered){
+			registered = false;
+			for(Subject sub : mSubjects)
+				sub.unregisterObserver(this);
+		}
 	}
 
 	@Override
@@ -123,6 +127,7 @@ public class ObserverLoader<D> extends AsyncTaskLoader<D> implements Observer {
 
 	public void setQuery(Query<D> query) {
 		this.mQuery = query;
+		update();
 	}
 
 	protected void releaseResources(D data){
